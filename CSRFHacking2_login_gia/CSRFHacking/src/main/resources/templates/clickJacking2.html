@@ -1,0 +1,58 @@
+<!-- <iframe src="http://localhost:3030/product/6">Bấm vào đây xem cà phê</iframe> -->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <script scr="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <meta charset="UTF-8">
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+  <title></title>
+  <style media="screen">
+    body{
+
+    }
+    div{
+      color:transparent;
+      border: none;
+      position: absolute;
+      width: 100px;
+      height: 100px;
+    }
+    iframe{
+      border: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      overflow: hidden;
+      /* overflow: auto;
+      overflow: -moz-scrollbars-none;
+      -ms-overflow-style: none; */
+      margin-right: -20px;
+      overflow-y: scroll;
+    }
+    /* iframe::-webkit-scrollbar{
+        width: 0 !important;
+        display: none;
+    } */
+    a{
+      color: transparent;
+      display: block;
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+<iframe src="https://filtrocoffeestore-production.up.railway.app/" width="" height=""></iframe>
+<div class="" id="demo2">
+  <a href="https://vnexpress.net">Click here</a>
+</div>
+<script type="text/javascript">
+  window.onmousemove = function(e){
+    var m = document.getElementById('demo2');
+    m.style.left = e.clientX - 30 + 'px';
+    m.style.top = e.clientY - 30 + 'px';
+  }
+</script>
+</body>
+</html>
