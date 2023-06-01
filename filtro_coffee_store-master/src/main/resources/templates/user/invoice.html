@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/user_layout :: layout (~{::content}, ~{::head_additional})}">
+<head>
+    <th:block th:fragment="head_additional"></th:block>
+</head>
+<body>
+<th:block th:fragment="content">
+    <th:block th:if="${session.user == null}">
+        <div class="container mb-5 mt-5">
+            <div class="text-center">
+
+                <h2 th:text="${message}"></h2>
+            </div>
+        </div>
+    </th:block>
+
+    <th:block th:if="${(!#lists.isEmpty(orderDetailList) or orderDetailList!=null) and session.user!=null}">
+        <div class="container mb-5 mt-5">
+            <form method="post" th:action="@{/invoice/makeInvoice/{orderId}(orderId=${order.getId()})}">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row justify-content-between">
+                            <div class="col-auto">
+                                <p class="mb-0">Hóa đơn: #<strong th:text="${order.getId()}">01/01/01/2018</strong></p>
+                                <p>Ngày thực hiện thanh toán: <strong
+                                        th:text="${#dates.format(order.getOrderDate(), 'dd/MM/yyy')}"></strong>
+                                </p>
+                            </div>
+                            <div class="col-auto">
+                                <span th:if="${order.getStatus() == 1}">Tình trạng: <strong>Chờ xác thác</strong> </span>
+                                <span th:if="${order.getStatus() == 2}">Tình trạng: <strong>Đã xác thực</strong> </span>
+                                <span th:if="${order.getStatus() == 3}">Tình trạng: <strong>Hàng đang giao (dự kiến 5 ngày)</strong> </span>
+                                <span th:if="${order.getStatus() == 4}">Tình trạng: <strong>Hàng đã được giao</strong> </span>
+                                <span th:if="${order.getStatus() == 5}">Tình trạng: <strong>Đang xử lý hoàn trả</strong> </span>
+                                <span th:if="${order.getStatus() == 6}">Tình trạng: <strong>Hàng đã hoàn trả</strong> </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4 justify-content-between">
+                            <div class="col-auto">
+                                <h6 class="mb-3">Từ:</h6>
+                                <div>
+                                    <strong>Filtro Coffee Shop</strong>
+                                </div>
+                                <div>Nowhere</div>
+                                <div>Unknown</div>
+                                <div>Email: filtro@webz.com.pl</div>
+                                <div>Phone: +84 123 456 7890</div>
+                            </div>
+
+                            <div class="col-auto">
+                                <h6 class="mb-3">Đến:</h6>
+                                <div>
+                                    <strong th:text="${order.user.getName()}">Bob Mart</strong>
+                                </div>
+                                <div th:text="${order.getAddress()}">Attn: Daniel Marek</div>
+                                <div th:text="${order.getCity()}">43-190 Mikolow, Poland</div>
+                                <div th:text="${order.getEmail()}">Email: marek@daniel.com</div>
+                                <div th:text="${order.getPhoneNumber()}">Phone: +48 123 456 789</div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="table-responsive-sm">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="center">#</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th class="right">Giá tiền</th>
+                                    <th class="center">Số lượng</th>
+                                    <th class="right">Tổng</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item, index : ${orderDetailList}">
+                                    <td class="center" th:text="${index.index+1}">1</td>
+                                    <td class="left strong" th:text="${item.getProduct().productName}">Origin License
+                                    </td>
+                                    <td class="right"
+                                        th:text="${#numbers.formatDecimal(item.getPrice(), 0, 'COMMA', 0, 'COMMA')+ 'đ'}">
+                                        $999,00
+                                    </td>
+                                    <td class="center" th:text="${item.getQuantity()}">1</td>
+                                    <td class="right"
+                                        th:text="${#numbers.formatDecimal(item.getTotal(), 0, 'COMMA', 0, 'COMMA')+ 'đ'}">
+                                        $999,00
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-5">
+                                Phương thức thanh toán: <strong
+                                    th:text="${order.getPaymentMethod().getName()}"></strong>
+                            </div>
+
+                            <div class="col-lg-4 col-sm-5 ml-auto">
+                                <table class="table table-clear">
+                                    <tbody>
+                                    <tr>
+                                        <td class="left">
+                                            <strong>Tạm tính</strong>
+                                        </td>
+                                        <td class="right"
+                                            th:text="${#numbers.formatDecimal(order.getTotal(), 0, 'COMMA', 0, 'COMMA')+ 'đ'}">
+                                            $8.497,00
+                                        </td>
+                                    </tr>
+                                    <!--                                    <tr>-->
+                                    <!--                                        <td class="left">-->
+                                    <!--                                            <strong>Discount (20%)</strong>-->
+                                    <!--                                        </td>-->
+                                    <!--                                        <td class="right">$1,699,40</td>-->
+                                    <!--                                    </tr>-->
+                                    <tr>
+                                        <td class="left">
+                                            <strong>VAT (10%)</strong>
+                                        </td>
+                                        <td class="right"
+                                            th:text="${#numbers.formatDecimal(order.getTotal()*0.1, 0, 'COMMA', 0, 'COMMA')+ 'đ'}">
+                                            $679,76
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">
+                                            <strong>Tổng</strong>
+                                        </td>
+                                        <td class="right">
+                                            <strong th:text="${#numbers.formatDecimal(order.getTotal()*1.1, 0, 'COMMA', 0, 'COMMA')+ 'đ'}">$7.477,36</strong>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <button th:if="${check == 1}" type="submit">Xác nhận hóa đơn</button>
+                    <button th:if="${check == 2}" type="submit" disabled>Đã xác nhận hóa đơn</button>
+                </div>
+
+            </form>
+        </div>
+    </th:block>
+    <th:block
+            th:if="${(#lists.isEmpty(orderDetailList) or orderDetailList == null) and session.user !=null}">
+        <div class="container mb-5 mt-5">
+            <div class="text-center">
+                <h2>THANH TOÁN TRƯỚC KHI VÀO ĐÂY NHA MÀY!</h2>
+            </div>
+        </div>
+    </th:block>
+</th:block>
+</body>
+</html>
